@@ -1,16 +1,56 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="11134" systemVersion="15F34" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="11762" systemVersion="16D30a" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+    <device id="watch38" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11106"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="11055"/>
+        <deployment identifier="watchOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="11508"/>
     </dependencies>
     <scenes>
         <!--Interface Controller-->
         <scene sceneID="aou-V4-d1y">
             <objects>
-                <controller id="AgC-eL-Hgc" customClass="InterfaceController" customModuleProvider="target"/>
+                <controller id="AgC-eL-Hgc" customClass="InterfaceController" customModule="MD_WatchKit_App" customModuleProvider="target">
+                    <items>
+                        <label alignment="center" text="App Ready" id="o74-NR-bjg" userLabel="titleLable"/>
+                        <imageView width="87" height="79" alignment="center" alpha="0.40000000000000002" image="Image" id="8DK-Jd-17j"/>
+                        <group width="1" alignment="left" verticalAlignment="bottom" id="AGG-q0-SvQ">
+                            <items>
+                                <button width="60" alignment="left" title="start" id="lTU-yF-NGW">
+                                    <connections>
+                                        <action selector="start" destination="AgC-eL-Hgc" id="myT-xq-QU2"/>
+                                    </connections>
+                                </button>
+                                <button width="60" alignment="right" title="end" id="Jv5-kv-RaL">
+                                    <connections>
+                                        <action selector="stop" destination="AgC-eL-Hgc" id="tGe-F6-gAK"/>
+                                    </connections>
+                                </button>
+                            </items>
+                        </group>
+                    </items>
+                    <menu key="menu" id="soL-TT-5rc">
+                        <items>
+                            <menuItem title="Start Sampling" icon="accept" id="Rat-Mw-K3r" userLabel="Start Sampling">
+                                <connections>
+                                    <action selector="start" destination="AgC-eL-Hgc" id="d6n-nH-Wmf"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Stop Sampling" icon="decline" id="LF6-E7-trl" userLabel="Stop Sampling">
+                                <connections>
+                                    <action selector="stop" destination="AgC-eL-Hgc" id="a9M-5q-gtz"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                    <connections>
+                        <outlet property="titleLabel" destination="o74-NR-bjg" id="gMq-I4-Upn"/>
+                    </connections>
+                </controller>
             </objects>
-            <point key="canvasLocation" x="220" y="345"/>
+            <point key="canvasLocation" x="220" y="324"/>
         </scene>
         <!--Static Notification Interface Controller-->
         <scene sceneID="AEw-b0-oYE">
@@ -31,7 +71,7 @@
         <!--Notification Controller-->
         <scene sceneID="ZPc-GJ-vnh">
             <objects>
-                <controller id="4sK-HA-Art" customClass="NotificationController" customModuleProvider="target"/>
+                <controller id="4sK-HA-Art" customClass="NotificationController" customModule="MD_WatchKit_App" customModuleProvider="target"/>
             </objects>
             <point key="canvasLocation" x="468" y="643"/>
         </scene>

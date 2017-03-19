@@ -7,11 +7,21 @@
 //
 
 import WatchKit
+import WatchConnectivity
 
-class ExtensionDelegate: NSObject, WKExtensionDelegate {
+class ExtensionDelegate: NSObject, WKExtensionDelegate, WCSessionDelegate
+{
 
     func applicationDidFinishLaunching() {
         // Perform any final initialization of your application.
+        
+        if WCSession.isSupported()
+        {
+            let session = WCSession.default()
+            session.delegate = self
+            session.activate()
+        }
+        
     }
 
     func applicationDidBecomeActive() {
@@ -45,6 +55,18 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 task.setTaskCompleted()
             }
         }
+    }
+    
+    func session(_ session: WCSession,
+                 activationDidCompleteWith activationState: WCSessionActivationState,
+                 error: Error?)
+    {
+        
+    }
+    
+    
+    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "recievedPhoneData"),object: self, userInfo: message)
     }
 
 }

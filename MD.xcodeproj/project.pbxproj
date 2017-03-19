@@ -20,6 +20,9 @@
 		F38299341E7833710075A860 /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38299331E7833710075A860 /* ExtensionDelegate.swift */; };
 		F38299361E7833710075A860 /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38299351E7833710075A860 /* NotificationController.swift */; };
 		F38299381E7833710075A860 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F38299371E7833710075A860 /* Assets.xcassets */; };
+		F38299481E783CA40075A860 /* MotionSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38299471E783CA40075A860 /* MotionSampler.swift */; };
+		F382994A1E783E550075A860 /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38299491E783E550075A860 /* MotionManager.swift */; };
+		F382994C1E783F7A0075A860 /* RunningBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F382994B1E783F7A0075A860 /* RunningBuffer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +86,10 @@
 		F38299351E7833710075A860 /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
 		F38299371E7833710075A860 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F38299391E7833710075A860 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F38299471E783CA40075A860 /* MotionSampler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionSampler.swift; sourceTree = "<group>"; };
+		F38299491E783E550075A860 /* MotionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionManager.swift; sourceTree = "<group>"; };
+		F382994B1E783F7A0075A860 /* RunningBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RunningBuffer.swift; sourceTree = "<group>"; };
+		F38E97231E7D24F2003EF242 /* MD.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MD.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +133,7 @@
 		F382990B1E7833710075A860 /* MD */ = {
 			isa = PBXGroup;
 			children = (
+				F38E97231E7D24F2003EF242 /* MD.entitlements */,
 				F382990C1E7833710075A860 /* AppDelegate.swift */,
 				F382990E1E7833710075A860 /* ViewController.swift */,
 				F38299101E7833710075A860 /* Main.storyboard */,
@@ -152,9 +160,12 @@
 				F38299311E7833710075A860 /* InterfaceController.swift */,
 				F38299331E7833710075A860 /* ExtensionDelegate.swift */,
 				F38299351E7833710075A860 /* NotificationController.swift */,
+				F38299491E783E550075A860 /* MotionManager.swift */,
+				F38299471E783CA40075A860 /* MotionSampler.swift */,
 				F38299371E7833710075A860 /* Assets.xcassets */,
 				F38299391E7833710075A860 /* Info.plist */,
 				F382992F1E7833710075A860 /* Supporting Files */,
+				F382994B1E783F7A0075A860 /* RunningBuffer.swift */,
 			);
 			path = "MD WatchKit Extension";
 			sourceTree = "<group>";
@@ -237,6 +248,11 @@
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = LKKN48HLNG;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 0;
+							};
+						};
 					};
 					F382991A1E7833710075A860 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -314,9 +330,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F38299481E783CA40075A860 /* MotionSampler.swift in Sources */,
+				F382994A1E783E550075A860 /* MotionManager.swift in Sources */,
 				F38299361E7833710075A860 /* NotificationController.swift in Sources */,
 				F38299341E7833710075A860 /* ExtensionDelegate.swift in Sources */,
 				F38299321E7833710075A860 /* InterfaceController.swift in Sources */,
+				F382994C1E783F7A0075A860 /* RunningBuffer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -569,6 +588,7 @@
 				F382993E1E7833710075A860 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F38299401E7833710075A860 /* Build configuration list for PBXNativeTarget "MD WatchKit App" */ = {
 			isa = XCConfigurationList;
@@ -577,6 +597,7 @@
 				F38299421E7833710075A860 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F38299441E7833710075A860 /* Build configuration list for PBXNativeTarget "MD" */ = {
 			isa = XCConfigurationList;
@@ -585,6 +606,7 @@
 				F38299461E7833710075A860 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
