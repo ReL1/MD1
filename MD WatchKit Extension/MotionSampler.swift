@@ -4,7 +4,7 @@ import HealthKit
 
 
 protocol MotionSamplerDelegate: class {
-    func xCoordUpdate(_ manager: MotionSampler, xCoord: Double)
+    func measureUpdate(_ manager: MotionSampler, measurementsArr:[[Double]])
 }
 
 class MotionSampler: MotionManagerDelegate {
@@ -36,8 +36,8 @@ class MotionSampler: MotionManagerDelegate {
         // Clear the workout session.
     }
  
-    func xCoordUpdate(_ manager: MotionManager, xCoord: Double){
-        delegate?.xCoordUpdate(self, xCoord: xCoord)
+    func measureUpdate(_ manager: MotionManager, measurementsArr: [[Double]]){
+        delegate?.measureUpdate(self, measurementsArr: measurementsArr)
     }
 
 }

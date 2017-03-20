@@ -12,38 +12,29 @@ import MessageUI
 
 class ViewController: UIViewController , MFMailComposeViewControllerDelegate{
 
-    @IBOutlet weak var toWatchField: UITextField!
     @IBOutlet weak var fromWatchLabel: UILabel!
-    var measurements = [String]()
-    var currX = ""
+    var singleMessageMeasures = [[Double]]()
+    var allMeasures = [[[Double]]]()
     var id=0
     var stringID = ""
+    var counter = 0
     let session = WCSession.default()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    
         NotificationCenter.default.addObserver(self, selector: #selector(messageRecieved), name: NSNotification.Name(rawValue: "recievedWatchMessage"), object: nil)
-        
-    }
-
-    @IBAction func sendToWatchTapped(sender: UIButton)
-    {
-        if self.session.isPaired == true && self.session.isWatchAppInstalled == true {
-            self.session.sendMessage(["msg":self.toWatchField.text!], replyHandler: nil, errorHandler: nil)
-        }
     }
     
+    //take message and insert to global array[][] of Double
     func messageRecieved(info:Notification)
     {
         let message = info.userInfo!
         DispatchQueue.main.sync {
-            self.fromWatchLabel.text = message["msg"] as? String
-            currX = (message["msg"] as? String)!
-            id = id + 1
-            stringID = String(id)
-            measurements += [stringID+","+currX]
+            self.fromWatchLabel.text = "records transferred"
+            singleMessageMeasures = message["msg"] as! [[Double]]
+            counter = counter + singleMessageMeasures.count
+            self.fromWatchLabel.text = String(counter)
+            allMeasures.append(singleMessageMeasures)
         }
     }
     
@@ -53,14 +44,32 @@ class ViewController: UIViewController , MFMailComposeViewControllerDelegate{
     }
     
     @IBAction func buttonClick(_ sender: UIButton) {
-        let fileName = "Tasks.csv"
+        let fileName = "Measurements.csv"
         let fpath = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
-        var csvText = "ID,xVal\n"
+        var csvText = "ID,x,y,z\n"
         
-        for currMeasure in measurements {
-            let newLine = "\(currMeasure)\n"
-            csvText.append(newLine)
+        for m in allMeasures {
+            //pull row from 2d array
+            for var x in 0..<m.count {
+                //create row and increment the id
+                id = id + 1
+                stringID = String(id)
+                
+                //create empty line for csv
+                var newLine = ""
+                newLine.append(stringID)
+                
+                //pull data from row and append to new csv line
+                for var y in 0..<m[x].count {
+                    var temp = m[x][y]
+                    var stringtemp = "\(temp)"
+                    newLine.append(","+stringtemp)
+                }
+                newLine.append("\n")
+                
+                csvText.append(newLine)
         }
+    }
         
         do {
             try csvText.write(to: fpath!, atomically: true, encoding: String.Encoding.utf8)
@@ -69,28 +78,11 @@ class ViewController: UIViewController , MFMailComposeViewControllerDelegate{
                 let emailController = MFMailComposeViewController()
                 emailController.mailComposeDelegate = self
                 emailController.setToRecipients([])
-                emailController.setSubject("data export")
-                emailController.setMessageBody("Hi,\n\nThe .csv data export is attached\n\n\nSent from the MD app", isHTML: false)
-                
-                emailController.addAttachmentData(NSData(contentsOf: fpath!)! as Data, mimeType: "text/csv", fileName: "Tasks.csv")
-
-                
+                emailController.setSubject("New measurements export")
+                emailController.setMessageBody("Hi,\n\nThe .csv measurements export is attached\n\n\nSent from the MD app", isHTML: false)
+                emailController.addAttachmentData(NSData(contentsOf: fpath!)! as Data, mimeType: "text/csv", fileName: "Measurements.csv")
                 present(emailController, animated: true, completion: nil)
             }
-                
-            //2nd option - anything but email
-            /**let vc = UIActivityViewController(activityItems: [fpath], applicationActivities: [])
-             vc.excludedActivityTypes = [
-             UIActivityType.assignToContact,
-             UIActivityType.saveToCameraRoll,
-             UIActivityType.postToFlickr,
-             UIActivityType.postToVimeo,
-             UIActivityType.postToTencentWeibo,
-             UIActivityType.postToTwitter,
-             UIActivityType.postToFacebook,
-             UIActivityType.openInIBooks
-             ]
-             present(vc, animated: true, completion: nil)**/
             }catch {
                 print("Failed to fetch feed data, critical error: \(error)")
             }

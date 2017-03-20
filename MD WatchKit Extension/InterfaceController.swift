@@ -7,31 +7,22 @@ import WatchConnectivity
 
 class InterfaceController: WKInterfaceController, MotionSamplerDelegate, WCSessionDelegate {
     
-    var toDisp = ""
+    var currMsg = [[Double]]()
+    var active = false
+    @IBOutlet weak var titleLabel: WKInterfaceLabel!
+    @IBOutlet weak var messageLabel: WKInterfaceLabel!
     
-    func xCoordUpdate(_ manager: MotionSampler, xCoord :Double) {
+    func measureUpdate(_ manager: MotionSampler, measurementsArr :[[Double]]) {
         /// Serialize the property access and UI updates on the main queue.
         DispatchQueue.main.async {
-            self.xCoord = "\(xCoord)"
-            self.toDisp = self.xCoord
+            self.currMsg = measurementsArr
             self.sendToPhone()
         }
     }
 
     
     let motionSampler = MotionSampler()
-    var active = false
-    
-    @IBOutlet weak var titleLabel: WKInterfaceLabel!
-    @IBOutlet weak var messageLabel: WKInterfaceLabel!
-    var xCoord = ""
     let session = WCSession.default()
-    
-    override func awake(withContext context: Any?) {
-        super.awake(withContext: context)
-        NotificationCenter.default.addObserver(self, selector: #selector(didRecievePhoneData), name: NSNotification.Name(rawValue: "recievedPhoneData"),object:nil)
-        
-    }
     
     override init() {
         super.init()
@@ -40,14 +31,10 @@ class InterfaceController: WKInterfaceController, MotionSamplerDelegate, WCSessi
     
     @IBAction func sendToPhone()
     {
-        self.session.sendMessage(["msg":toDisp], replyHandler: nil, errorHandler: nil)
+        self.session.sendMessage(["msg":self.currMsg], replyHandler: nil, errorHandler: nil)
     }
     
-    func didRecievePhoneData(info:Notification)
-    {
-        let msg = info.userInfo!
-        self.messageLabel.setText(msg["msg"] as? String)
-    }
+    
     
     // MARK: WKInterfaceController
     override func willActivate() {
@@ -63,7 +50,6 @@ class InterfaceController: WKInterfaceController, MotionSamplerDelegate, WCSessi
     
     // MARK: Interface Bindings
     @IBAction func start() {
-        
         self.titleLabel.setText("Sampling started")
         motionSampler.startSampling()
         
@@ -74,7 +60,6 @@ class InterfaceController: WKInterfaceController, MotionSamplerDelegate, WCSessi
         motionSampler.stopSampling()
     }
     
-   
     
     func session(_ session: WCSession,
                  activationDidCompleteWith activationState: WCSessionActivationState,

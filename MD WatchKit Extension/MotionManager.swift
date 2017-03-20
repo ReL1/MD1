@@ -4,31 +4,21 @@ import CoreMotion
 import WatchKit
 
 protocol MotionManagerDelegate: class {
-    func xCoordUpdate(_ manager: MotionManager, xCoord: Double)
+    func measureUpdate(_ manager: MotionManager, measurementsArr: [[Double]])
 }
 
 class MotionManager {
-    // MARK: Properties
     
     let motionManager = CMMotionManager()
     let queue = OperationQueue()
     let wristLocationIsLeft = WKInterfaceDevice.current().wristLocation == .right
-    
-    // MARK: Application Specific Constants
-    
-    //--------------------- not configured yes ----------------------//
-    // These constants were derived from data and should be further tuned for your needs.
-    let yawThreshold = 1.95 // Radians
-    let rateThreshold = 5.5 // Radians/sec
-    let resetThreshold = 5.5 * 0.05 // To avoid double counting on the return swing.
-    //---------------------------------------------------------------//
-
+    var counter = 0
+    var measurementsArr = [[Double]]()
     
     // 50hz
     let sampleInterval = 1.0 / 50
     
     weak var delegate: MotionManagerDelegate?
-    
     
     init() {
         // Serial queue for sample handling and calculations.
@@ -36,9 +26,8 @@ class MotionManager {
         queue.name = "MotionManagerQueue"
     }
     
-    // MARK: Motion Manager
-    
     func startUpdates() {
+        counter = 0
         if !motionManager.isDeviceMotionAvailable {
             print("Device Motion is not available.")
             return
@@ -58,26 +47,37 @@ class MotionManager {
     
     func stopUpdates() {
         if motionManager.isDeviceMotionAvailable {
+            measureUpdateDelegate(measurementsArr: measurementsArr)
+            counter = 0
             motionManager.stopDeviceMotionUpdates()
         }
     }
-    
-    // MARK: Motion Processing
-    
+      
     func processDeviceMotion(_ deviceMotion: CMDeviceMotion) {
         //pull different measurements
+        counter = counter + 1
         let rotationRateX = deviceMotion.rotationRate.x
         let rotationRateY = deviceMotion.rotationRate.y
         let rotationRateZ = deviceMotion.rotationRate.z
-        let rotationRate = deviceMotion.rotationRate
         
-        let xVal:Double = rotationRateX
+        //add measurement attrs to new row of string
+        var tempRow = [Double]()
+        tempRow.append(rotationRateX)
+        tempRow.append(rotationRateY)
+        tempRow.append(rotationRateZ)
+
+        //append row to 2d array of measurements
+        measurementsArr.append(tempRow)
         
-        xCoordUpdateDelegate(xVal: xVal)
+        if counter==500 {
+            measureUpdateDelegate(measurementsArr: measurementsArr)
+            counter = 0
+            measurementsArr.removeAll()
+        }
     }
     
-    func xCoordUpdateDelegate(xVal:Double) {
-        delegate?.xCoordUpdate(self, xCoord:xVal)
+    func measureUpdateDelegate(measurementsArr:[[Double]]) {
+        delegate?.measureUpdate(self, measurementsArr:measurementsArr)
     }
     
     
