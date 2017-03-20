@@ -46,6 +46,8 @@
                         </items>
                     </menu>
                     <connections>
+                        <outlet property="startButton" destination="lTU-yF-NGW" id="Tdu-ac-V8J"/>
+                        <outlet property="stopButton" destination="Jv5-kv-RaL" id="ipW-wS-NZM"/>
                         <outlet property="titleLabel" destination="o74-NR-bjg" id="gMq-I4-Upn"/>
                     </connections>
                 </controller>

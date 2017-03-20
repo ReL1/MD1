@@ -10,19 +10,43 @@ import UIKit
 import WatchConnectivity
 import MessageUI
 
-class ViewController: UIViewController , MFMailComposeViewControllerDelegate{
+class ViewController: UIViewController , MFMailComposeViewControllerDelegate, UITextFieldDelegate{
 
+    @IBOutlet weak var nameField: UITextField!
+    @IBOutlet weak var howto:UILabel!
+    @IBOutlet weak var howtopicture:UIImageView!
+    @IBOutlet weak var leftWristBtn: UIButton!
+    @IBOutlet weak var whenDoneBtn: UIButton!
+    @IBOutlet weak var rightWristBtn: UIButton!
+    @IBOutlet weak var smokeActivityBtn: UIButton!
+    @IBOutlet weak var otherActivityBtn: UIButton!
     @IBOutlet weak var fromWatchLabel: UILabel!
+    
     var singleMessageMeasures = [[Double]]()
     var allMeasures = [[[Double]]]()
     var id=0
     var stringID = ""
     var counter = 0
     let session = WCSession.default()
+    var wristVal = ""
+    var activityVal = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(messageRecieved), name: NSNotification.Name(rawValue: "recievedWatchMessage"), object: nil)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool
+    {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        nameField.delegate = self
+        nameField.returnKeyType = .done
+        self.view.addSubview(nameField)
     }
     
     //take message and insert to global array[][] of Double
@@ -30,10 +54,13 @@ class ViewController: UIViewController , MFMailComposeViewControllerDelegate{
     {
         let message = info.userInfo!
         DispatchQueue.main.sync {
-            self.fromWatchLabel.text = "records transferred"
             singleMessageMeasures = message["msg"] as! [[Double]]
             counter = counter + singleMessageMeasures.count
-            self.fromWatchLabel.text = String(counter)
+            self.fromWatchLabel.text = "Records transferred: " + String(counter)
+            if singleMessageMeasures.count < 500 {
+                self.fromWatchLabel.backgroundColor = UIColor.green
+                self.fromWatchLabel.text = "Done." + String(counter) + " Records transmitted."
+            }
             allMeasures.append(singleMessageMeasures)
         }
     }
@@ -43,10 +70,52 @@ class ViewController: UIViewController , MFMailComposeViewControllerDelegate{
         // Dispose of any resources that can be recreated.
     }
     
+    @IBAction func leftHandPicked(_ sender: Any) {
+        wristVal = "left wrist"
+        self.rightWristBtn.isUserInteractionEnabled = false
+        self.leftWristBtn.backgroundColor = UIColor.green
+        self.rightWristBtn.isHidden = true
+    }
+    
+    @IBAction func rightHandPicked(_ sender: Any) {
+        wristVal = "right wrist"
+        self.leftWristBtn.isUserInteractionEnabled = false
+        self.rightWristBtn.backgroundColor = UIColor.green
+        self.leftWristBtn.isHidden = true
+    }
+    
+    @IBAction func smokingPicked(_ sender: Any) {
+        activityVal = "Smoking"
+        self.otherActivityBtn.isUserInteractionEnabled = false
+        self.smokeActivityBtn.backgroundColor = UIColor.green
+        self.otherActivityBtn.isHidden = true
+        self.howto.isHidden = false
+        self.howtopicture.isHidden = false
+        self.whenDoneBtn.isHidden = false
+        self.fromWatchLabel.isHidden = false
+    }
+    
+    @IBAction func otherActivityPicked(_ sender: Any) {
+        activityVal = "right wrist"
+        self.smokeActivityBtn.isUserInteractionEnabled = false
+        self.otherActivityBtn.backgroundColor = UIColor.green
+        self.smokeActivityBtn.isHidden = true
+        self.howto.isHidden = false
+        self.howtopicture.isHidden = false
+        self.whenDoneBtn.isHidden = false
+        self.fromWatchLabel.isHidden = false
+    }
+    
+    
     @IBAction func buttonClick(_ sender: UIButton) {
-        let fileName = "Measurements.csv"
+        var date = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd_MM_yyyy_HH-mm"
+        var convertedDate = dateFormatter.string(from: date)
+        
+        let fileName = convertedDate+"_Measurements.csv"
         let fpath = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
-        var csvText = "ID,x,y,z\n"
+        var csvText = "ID,x,y,z,secondsPassed\n"
         
         for m in allMeasures {
             //pull row from 2d array
@@ -79,8 +148,10 @@ class ViewController: UIViewController , MFMailComposeViewControllerDelegate{
                 emailController.mailComposeDelegate = self
                 emailController.setToRecipients([])
                 emailController.setSubject("New measurements export")
-                emailController.setMessageBody("Hi,\n\nThe .csv measurements export is attached\n\n\nSent from the MD app", isHTML: false)
-                emailController.addAttachmentData(NSData(contentsOf: fpath!)! as Data, mimeType: "text/csv", fileName: "Measurements.csv")
+                let partA = "Hi,\n\nThe .csv measurements export is attached\n\n Participant Name:"
+                let partB = self.nameField.text! + "\n Activity:" + self.activityVal + "\n Wrist:" + self.wristVal + "\nSent from the MD app"
+                emailController.setMessageBody( partA + partB, isHTML: false)
+                emailController.addAttachmentData(NSData(contentsOf: fpath!)! as Data, mimeType: "text/csv", fileName: fileName)
                 present(emailController, animated: true, completion: nil)
             }
             }catch {
@@ -96,6 +167,7 @@ class ViewController: UIViewController , MFMailComposeViewControllerDelegate{
             // Dismiss the mail compose view controller.
             controller.dismiss(animated: true, completion: nil)
     }
+    
 }
     
 

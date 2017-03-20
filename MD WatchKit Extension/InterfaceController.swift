@@ -10,7 +10,9 @@ class InterfaceController: WKInterfaceController, MotionSamplerDelegate, WCSessi
     var currMsg = [[Double]]()
     var active = false
     @IBOutlet weak var titleLabel: WKInterfaceLabel!
-    @IBOutlet weak var messageLabel: WKInterfaceLabel!
+    @IBOutlet  var startButton: WKInterfaceButton!
+    @IBOutlet  var stopButton: WKInterfaceButton!
+
     
     func measureUpdate(_ manager: MotionSampler, measurementsArr :[[Double]]) {
         /// Serialize the property access and UI updates on the main queue.
@@ -50,12 +52,16 @@ class InterfaceController: WKInterfaceController, MotionSamplerDelegate, WCSessi
     
     // MARK: Interface Bindings
     @IBAction func start() {
+        startButton.setEnabled(false)
+        stopButton.setEnabled(true)
         self.titleLabel.setText("Sampling started")
         motionSampler.startSampling()
         
     }
     
     @IBAction func stop() {
+        startButton.setEnabled(true)
+        stopButton.setEnabled(false)
        self.titleLabel.setText("Sampling stopped")
         motionSampler.stopSampling()
     }

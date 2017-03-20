@@ -14,7 +14,7 @@ class MotionManager {
     let wristLocationIsLeft = WKInterfaceDevice.current().wristLocation == .right
     var counter = 0
     var measurementsArr = [[Double]]()
-    
+    var startTime = Date()
     // 50hz
     let sampleInterval = 1.0 / 50
     
@@ -32,7 +32,9 @@ class MotionManager {
             print("Device Motion is not available.")
             return
         }
-        
+        //start counting time since startupdates
+        startTime = Date()
+
         motionManager.deviceMotionUpdateInterval = sampleInterval
         motionManager.startDeviceMotionUpdates(to: queue) { (deviceMotion: CMDeviceMotion?, error: Error?) in
             if error != nil {
@@ -56,6 +58,7 @@ class MotionManager {
     func processDeviceMotion(_ deviceMotion: CMDeviceMotion) {
         //pull different measurements
         counter = counter + 1
+        let elapsed = Date().timeIntervalSince(startTime)
         let rotationRateX = deviceMotion.rotationRate.x
         let rotationRateY = deviceMotion.rotationRate.y
         let rotationRateZ = deviceMotion.rotationRate.z
@@ -65,7 +68,7 @@ class MotionManager {
         tempRow.append(rotationRateX)
         tempRow.append(rotationRateY)
         tempRow.append(rotationRateZ)
-
+        tempRow.append(elapsed)
         //append row to 2d array of measurements
         measurementsArr.append(tempRow)
         
