@@ -1,10 +1,3 @@
-//
-//  ViewController.swift
-//  MD
-//
-//  Created by ariel nitzan on 14/03/2017.
-//  Copyright © 2017 ariel nitzan. All rights reserved.
-//
 
 import UIKit
 import WatchConnectivity
@@ -71,21 +64,21 @@ class ViewController: UIViewController , MFMailComposeViewControllerDelegate, UI
     }
     
     @IBAction func leftHandPicked(_ sender: Any) {
-        wristVal = "left wrist"
+        wristVal = " Left wrist"
         self.rightWristBtn.isUserInteractionEnabled = false
         self.leftWristBtn.backgroundColor = UIColor.green
         self.rightWristBtn.isHidden = true
     }
     
     @IBAction func rightHandPicked(_ sender: Any) {
-        wristVal = "right wrist"
+        wristVal = " Right wrist"
         self.leftWristBtn.isUserInteractionEnabled = false
         self.rightWristBtn.backgroundColor = UIColor.green
         self.leftWristBtn.isHidden = true
     }
     
     @IBAction func smokingPicked(_ sender: Any) {
-        activityVal = "Smoking"
+        activityVal = " Smoking"
         self.otherActivityBtn.isUserInteractionEnabled = false
         self.smokeActivityBtn.backgroundColor = UIColor.green
         self.otherActivityBtn.isHidden = true
@@ -96,7 +89,7 @@ class ViewController: UIViewController , MFMailComposeViewControllerDelegate, UI
     }
     
     @IBAction func otherActivityPicked(_ sender: Any) {
-        activityVal = "right wrist"
+        activityVal = " Other"
         self.smokeActivityBtn.isUserInteractionEnabled = false
         self.otherActivityBtn.backgroundColor = UIColor.green
         self.smokeActivityBtn.isHidden = true
@@ -108,18 +101,18 @@ class ViewController: UIViewController , MFMailComposeViewControllerDelegate, UI
     
     
     @IBAction func buttonClick(_ sender: UIButton) {
-        var date = Date()
+        let date = Date()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd_MM_yyyy_HH-mm"
-        var convertedDate = dateFormatter.string(from: date)
+        let convertedDate = dateFormatter.string(from: date)
         
         let fileName = convertedDate+"_Measurements.csv"
         let fpath = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
-        var csvText = "ID,x,y,z,secondsPassed\n"
+        var csvText = "measurementID,rotationX,rotationY,rotationZ,gravityX,gravityY,gravityZ,pitch,roll,yaw,accelX,accelY,accelZ,secondsPassed\n"
         
         for m in allMeasures {
             //pull row from 2d array
-            for var x in 0..<m.count {
+            for x in 0..<m.count {
                 //create row and increment the id
                 id = id + 1
                 stringID = String(id)
@@ -129,9 +122,9 @@ class ViewController: UIViewController , MFMailComposeViewControllerDelegate, UI
                 newLine.append(stringID)
                 
                 //pull data from row and append to new csv line
-                for var y in 0..<m[x].count {
-                    var temp = m[x][y]
-                    var stringtemp = "\(temp)"
+                for y in 0..<m[x].count {
+                    let temp = m[x][y]
+                    let stringtemp = "\(temp)"
                     newLine.append(","+stringtemp)
                 }
                 newLine.append("\n")

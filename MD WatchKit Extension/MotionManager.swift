@@ -62,12 +62,35 @@ class MotionManager {
         let rotationRateX = deviceMotion.rotationRate.x
         let rotationRateY = deviceMotion.rotationRate.y
         let rotationRateZ = deviceMotion.rotationRate.z
+        let gravityX = deviceMotion.gravity.x
+        let gravityY = deviceMotion.gravity.y
+        let gravityZ = deviceMotion.gravity.z
+        let pitch = deviceMotion.attitude.pitch
+        let roll = deviceMotion.attitude.roll
+        let yaw = deviceMotion.attitude.yaw
+        let accelX = deviceMotion.userAcceleration.x
+        let accelY = deviceMotion.userAcceleration.y
+        let accelZ = deviceMotion.userAcceleration.z
         
         //add measurement attrs to new row of string
         var tempRow = [Double]()
+        //rotational
         tempRow.append(rotationRateX)
         tempRow.append(rotationRateY)
         tempRow.append(rotationRateZ)
+        //gravity
+        tempRow.append(gravityX)
+        tempRow.append(gravityY)
+        tempRow.append(gravityZ)
+        //attitude
+        tempRow.append(pitch)
+        tempRow.append(roll)
+        tempRow.append(yaw)
+        //accel
+        tempRow.append(accelX)
+        tempRow.append(accelY)
+        tempRow.append(accelZ)
+
         tempRow.append(elapsed)
         //append row to 2d array of measurements
         measurementsArr.append(tempRow)
