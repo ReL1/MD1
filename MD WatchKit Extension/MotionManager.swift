@@ -71,6 +71,10 @@ class MotionManager {
         let accelX = deviceMotion.userAcceleration.x
         let accelY = deviceMotion.userAcceleration.y
         let accelZ = deviceMotion.userAcceleration.z
+        let magneticFieldAccuracy = deviceMotion.magneticField.accuracy.rawValue
+        let magneticFieldX = deviceMotion.magneticField.field.x
+        let magneticFieldY = deviceMotion.magneticField.field.y
+        let magneticFieldZ = deviceMotion.magneticField.field.z
         
         //add measurement attrs to new row of string
         var tempRow = [Double]()
@@ -90,7 +94,13 @@ class MotionManager {
         tempRow.append(accelX)
         tempRow.append(accelY)
         tempRow.append(accelZ)
-
+        
+        //magnetic field--not supported
+        //tempRow.append(magneticFieldX)
+        //tempRow.append(magneticFieldY)
+        //tempRow.append(magneticFieldZ)
+        //tempRow.append(Double(magneticFieldAccuracy))
+        
         tempRow.append(elapsed)
         //append row to 2d array of measurements
         measurementsArr.append(tempRow)

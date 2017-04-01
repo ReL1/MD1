@@ -1,6 +1,5 @@
 
 import Foundation
-import HealthKit
 
 
 protocol MotionSamplerDelegate: class {

@@ -108,7 +108,7 @@ class ViewController: UIViewController , MFMailComposeViewControllerDelegate, UI
         
         let fileName = convertedDate+"_Measurements.csv"
         let fpath = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
-        var csvText = "measurementID,rotationX,rotationY,rotationZ,gravityX,gravityY,gravityZ,pitch,roll,yaw,accelX,accelY,accelZ,secondsPassed\n"
+        var csvText = "measurementID,rotationX,rotationY,rotationZ,gravityX,gravityY,gravityZ,pitch,roll,yaw,accelX,accelY,accelZ,secondsPassed\n"       
         
         for m in allMeasures {
             //pull row from 2d array
