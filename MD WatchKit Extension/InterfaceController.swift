@@ -12,6 +12,9 @@ class InterfaceController: WKInterfaceController, MotionSamplerDelegate, WCSessi
     @IBOutlet weak var titleLabel: WKInterfaceLabel!
     @IBOutlet  var startButton: WKInterfaceButton!
     @IBOutlet  var stopButton: WKInterfaceButton!
+    @IBOutlet weak var repsCountLabel: WKInterfaceLabel!
+
+    var reps = 0
 
     
     func measureUpdate(_ manager: MotionSampler, measurementsArr :[[Double]]) {
@@ -42,7 +45,8 @@ class InterfaceController: WKInterfaceController, MotionSamplerDelegate, WCSessi
     override func willActivate() {
         super.willActivate()
         active = true
-        
+        updateLabels()
+
     }
     
     override func didDeactivate() {
@@ -67,6 +71,20 @@ class InterfaceController: WKInterfaceController, MotionSamplerDelegate, WCSessi
     }
     
     
+    func didUpdateRepsSwingCount(_ manager: MotionSampler, reps: Int) {
+        /// Serialize the property access and UI updates on the main queue.
+        DispatchQueue.main.async {
+            self.reps = reps
+            self.updateLabels()
+        }
+    }
+    
+    func updateLabels() {
+        if active {
+            repsCountLabel.setText("Reps: \(reps)")
+        }
+    }
+
     func session(_ session: WCSession,
                  activationDidCompleteWith activationState: WCSessionActivationState,
                  error: Error?)

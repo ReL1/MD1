@@ -78,7 +78,7 @@ class ViewController: UIViewController , MFMailComposeViewControllerDelegate, UI
     }
     
     @IBAction func smokingPicked(_ sender: Any) {
-        activityVal = " Smoking"
+        activityVal = " Gym"
         self.otherActivityBtn.isUserInteractionEnabled = false
         self.smokeActivityBtn.backgroundColor = UIColor.green
         self.otherActivityBtn.isHidden = true
@@ -151,10 +151,6 @@ class ViewController: UIViewController , MFMailComposeViewControllerDelegate, UI
                 print("Failed to fetch feed data, critical error: \(error)")
             }
     }
-    
-    //func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
-    //    controller.dismiss(animated: true, completion: nil)
-    //}
     
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
             // Dismiss the mail compose view controller.

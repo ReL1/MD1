@@ -5,6 +5,8 @@ import WatchKit
 
 protocol MotionManagerDelegate: class {
     func measureUpdate(_ manager: MotionManager, measurementsArr: [[Double]])
+    func didUpdateRepsSwingCount(_ manager: MotionManager, reps: Int)
+
 }
 
 class MotionManager {
@@ -17,6 +19,19 @@ class MotionManager {
     var startTime = Date()
     // 50hz
     let sampleInterval = 1.0 / 50
+    
+    // less than 1 second buffer.
+    let AccelBuffer = RunningBuffer(size: 45)
+    
+    let upThresh = 0.17
+    let downThresh = -0.10
+    
+    var lastRep = ""
+    var reps = 0
+    var repOk = false
+    
+    var recentDetection = false
+
     
     weak var delegate: MotionManagerDelegate?
     
@@ -32,6 +47,9 @@ class MotionManager {
             print("Device Motion is not available.")
             return
         }
+        
+        resetAllState()
+        
         //start counting time since startupdates
         startTime = Date()
 
@@ -71,10 +89,6 @@ class MotionManager {
         let accelX = deviceMotion.userAcceleration.x
         let accelY = deviceMotion.userAcceleration.y
         let accelZ = deviceMotion.userAcceleration.z
-        let magneticFieldAccuracy = deviceMotion.magneticField.accuracy.rawValue
-        let magneticFieldX = deviceMotion.magneticField.field.x
-        let magneticFieldY = deviceMotion.magneticField.field.y
-        let magneticFieldZ = deviceMotion.magneticField.field.z
         
         //add measurement attrs to new row of string
         var tempRow = [Double]()
@@ -100,6 +114,10 @@ class MotionManager {
         //tempRow.append(magneticFieldY)
         //tempRow.append(magneticFieldZ)
         //tempRow.append(Double(magneticFieldAccuracy))
+        //let magneticFieldAccuracy = deviceMotion.magneticField.accuracy.rawValue
+        //let magneticFieldX = deviceMotion.magneticField.field.x
+        //let magneticFieldY = deviceMotion.magneticField.field.y
+        //let magneticFieldZ = deviceMotion.magneticField.field.z
         
         tempRow.append(elapsed)
         //append row to 2d array of measurements
@@ -110,11 +128,94 @@ class MotionManager {
             counter = 0
             measurementsArr.removeAll()
         }
+        
+        let currZaccel = deviceMotion.userAcceleration.z
+        
+        let avgproduct = currZaccel
+        
+        AccelBuffer.addSample(avgproduct)
+        
+        if !AccelBuffer.isFull() {
+            return
+        }
+        
+        let currMean = AccelBuffer.recentMean()
+        
+        if (currMean > upThresh) {
+            if (lastRep == "")
+            {
+                up()
+            }
+            else
+            {
+                lastRep = ""
+            }
+            
+        } else if currMean < (downThresh) {
+            if(lastRep == "up")
+            {
+                down()
+                repOk = true
+            }
+            else
+            {
+                lastRep = ""
+            }
+        }
+        
+        if(repOk) {
+            rep()
+            WKInterfaceDevice().play(.notification)
+            lastRep = ""
+            repOk = false
+        }
+        
+        // Reset after letting the rate settle to catch the return swing.
+        if (recentDetection) {
+            recentDetection = false
+            AccelBuffer.reset()
+        }
     }
     
+    func resetAllState() {
+    AccelBuffer.reset()
+        
+    recentDetection = false
+    updateRepsSwingDelegate()
+    }
+    
+   
+    
+    func down() {
+        if (!recentDetection) {
+            lastRep = "down"
+            recentDetection = true
+        }
+    }
+    
+    func up() {
+        if (!recentDetection) {
+            lastRep = "up"
+            recentDetection = true
+        }
+    }
+    
+    func rep() {
+        if (recentDetection) {
+            lastRep = ""
+            reps += 1
+            print("reps: \(reps)")
+            recentDetection = true
+            updateRepsSwingDelegate()
+        }
+    }
+
     func measureUpdateDelegate(measurementsArr:[[Double]]) {
         delegate?.measureUpdate(self, measurementsArr:measurementsArr)
     }
     
     
+    func updateRepsSwingDelegate() {
+        delegate?.didUpdateRepsSwingCount(self, reps:reps)
+    }
 }

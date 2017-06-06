@@ -4,6 +4,8 @@ import Foundation
 
 protocol MotionSamplerDelegate: class {
     func measureUpdate(_ manager: MotionSampler, measurementsArr:[[Double]])
+    func didUpdateRepsSwingCount(_ manager: MotionSampler, reps: Int)
+
 }
 
 class MotionSampler: MotionManagerDelegate {
@@ -37,6 +39,10 @@ class MotionSampler: MotionManagerDelegate {
  
     func measureUpdate(_ manager: MotionManager, measurementsArr: [[Double]]){
         delegate?.measureUpdate(self, measurementsArr: measurementsArr)
+    }
+    
+    func didUpdateRepsSwingCount(_ manager: MotionManager, reps: Int) {
+        delegate?.didUpdateRepsSwingCount(self, reps: reps)
     }
 
 }

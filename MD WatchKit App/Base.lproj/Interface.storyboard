@@ -15,7 +15,7 @@
                 <controller id="AgC-eL-Hgc" customClass="InterfaceController" customModule="MD_WatchKit_App" customModuleProvider="target">
                     <items>
                         <label alignment="center" text="App Ready" id="o74-NR-bjg" userLabel="titleLable"/>
-                        <imageView width="87" height="79" alignment="center" alpha="0.40000000000000002" image="Image" id="8DK-Jd-17j"/>
+                        <label alignment="left" alpha="0.69999999999999996" text="Reps:" id="hmp-I4-pLu" userLabel="titleLable"/>
                         <group width="1" alignment="left" verticalAlignment="bottom" id="AGG-q0-SvQ">
                             <items>
                                 <button width="60" alignment="left" title="start" id="lTU-yF-NGW">
@@ -30,6 +30,7 @@
                                 </button>
                             </items>
                         </group>
+                        <imageView width="87" height="61" alignment="center" alpha="0.45000000000000001" image="Image" id="8DK-Jd-17j"/>
                     </items>
                     <menu key="menu" id="soL-TT-5rc">
                         <items>
@@ -46,6 +47,7 @@
                         </items>
                     </menu>
                     <connections>
+                        <outlet property="repsCountLabel" destination="hmp-I4-pLu" id="3zh-Jf-M5l"/>
                         <outlet property="startButton" destination="lTU-yF-NGW" id="Tdu-ac-V8J"/>
                         <outlet property="stopButton" destination="Jv5-kv-RaL" id="ipW-wS-NZM"/>
                         <outlet property="titleLabel" destination="o74-NR-bjg" id="gMq-I4-Upn"/>
